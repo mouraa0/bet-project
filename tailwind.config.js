@@ -6,7 +6,9 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      overflow: ['hover', 'focus']
+    },
   },
   plugins: [],
 }
