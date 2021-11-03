@@ -4,7 +4,6 @@ import clientPromise from '../lib/mongodb'
 
 export default function Home({ isConnected }) {  
   return (
-      <Layout>
         <div className="flex flex-col items-center justify-center min-h-screen py-2">
           <Head>
             <title>Create Next App</title>
@@ -82,7 +81,6 @@ export default function Home({ isConnected }) {
             </a>
           </footer>
         </div>
-      </Layout>  
   )
 }
 
