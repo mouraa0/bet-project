@@ -1,11 +1,20 @@
-import clientPromise from "../../lib/mongodb";
+import Router from 'next/router';
+import clientPromisse from '../../lib/mongodb';
 
 export default async (req, res) => {
-    const client = await clientPromise;
-    const db = await client.db();
+    const email = req.body.email;
+    const psw = req.body.password;
+    const user = {
+        email: email,
+        password: psw,
+    }
 
-    const teste = await db
-        .collection('users')
-        .find({})
-            .then(res.json(teste))
+    res.send()
+
+    // return db.collections('users')
+    //         .insertMany(user)
+    //         .then(result => console.log(result))
+    //         .catch(err => console.log(err))
+
+    res(Router.push('/'));
 };
