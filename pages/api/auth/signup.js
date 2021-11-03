@@ -1,6 +1,6 @@
-import hashPassword from '../../lib/auth';
+import { hashPassword } from '../../../lib/auth';
 
-const SignUp = require('../../models/signup');
+const User = require('../../../models/user');
 
 export default async (req, res) => {
     if (req.method === 'POST') {
@@ -8,7 +8,7 @@ export default async (req, res) => {
         const psw = req.body.password;
         const hashedPsw = await hashPassword(psw);
 
-        const user = new SignUp(email, hashedPsw);
+        const user = new User(email, hashedPsw);
         user.verifySignUp()
             .then(result => {
                 return result;

@@ -1,4 +1,3 @@
-import Layout from "../components/Layout";
 import { useState } from 'react';
 
 export default function SignUp() {
@@ -8,7 +7,7 @@ export default function SignUp() {
     const submitHandler = (event) => {
         event.preventDefault();
         fetch(
-            '/api/signup',
+            '/api/auth/signup',
             {
                 body: JSON.stringify({
                     email: enteredEmail,

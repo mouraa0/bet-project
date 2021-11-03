@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
 import { useState } from "react";
+import {signIn} from 'next-auth/client';
 
 export default function Login() {
     const [enteredEmail, setEnteredEmail] = useState('');
@@ -7,23 +7,16 @@ export default function Login() {
 
     const submitHandler = async (event) => {
         event.preventDefault();
+        const result = await signIn('credentials', { 
+            redirect: false,
+            email: enteredEmail,
+            password: enteredPassword
+        });
 
-        // fetch(
-        //     '/api/signup',
-        //     {
-        //         body: JSON.stringify({
-        //             email: enteredEmail,
-        //             password: enteredPassword,
-        //         }),
-        //         headers: {
-        //             'Content-type': 'application/json'
-        //         },
-        //         method: 'POST'
-        //     }
-        // )
+        console.log(result);
 
-        setEnteredEmail('');
-        setEnteredPassword('');
+        // setEnteredEmail('');
+        // setEnteredPassword('');
 
     };
 
