@@ -1,7 +1,5 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-// import { comparePassword } from "../../../lib/auth";
-// import clientPromise from "../../../lib/mongodb";
 import User from '../../../models/user';
 
 export default NextAuth({
@@ -14,14 +12,15 @@ export default NextAuth({
                 const email = credentials.email;
                 const password = credentials.password;
 
-                const user = await new User(email, password);
+                const user = await new User('a', email, password);
                 const result = await user.verifyLogin();
+                const userData = result.user
                 
                 if (!result.status) {
                     throw new Error(result.cause);
                 }
 
-                return { email: email };
+                return { name: userData };
             }
         })
     ]

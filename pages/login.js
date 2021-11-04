@@ -13,10 +13,8 @@ export default function Login() {
             password: enteredPassword
         });
 
-        console.log(result);
-
-        // setEnteredEmail('');
-        // setEnteredPassword('');
+        setEnteredEmail('');
+        setEnteredPassword('');
 
     };
 
