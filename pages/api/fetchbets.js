@@ -1,5 +1,7 @@
 import axios from 'axios';
 import cron from 'node-cron';
+import cronTime from "cron-time-generator"
+import gameDataTreatment from '../../lib/gameDataTreatment';
 
 export default async (req, res) => {
     const options = {
@@ -11,11 +13,13 @@ export default async (req, res) => {
           'x-rapidapi-key': '956c8784bemsh98a97cadaff4dd2p12f979jsna9c01ecaa7e5'
         }
       };
-      // cron.schedule('0 0/30 * 1/1 * ? *', () => {
-        axios(options).then(function (response) {
-          console.log(res.send(response.data));
-        }).catch(function (error) {
-          console.error(error);
+
+    cron.schedule(cronTime.every(30).minutes(), () => {
+      axios(options).then(function (response) {
+        gameDataTreatment(response.data.response);
+        console.log(res.send(response.data));
+      }).catch(function (error) {
+        console.error(error);
       });
-      // });
+    });
 };
