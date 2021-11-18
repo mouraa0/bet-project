@@ -12,15 +12,27 @@ export default NextAuth({
                 const email = credentials.email;
                 const password = credentials.password;
 
-                const user = await new User('a', email, password);
-                const result = await user.verifyLogin();
-                const userData = result.user
-                
-                if (!result.status) {
-                    throw new Error(result.cause);
-                }
+                const isEmailInDb = await User.verifyEmail(email);
 
-                return { name: userData };
+                if (isEmailInDb) {
+                   const isPasswordValid = await User.verifyPassword(email, password);
+
+                   if(isPasswordValid) {
+                        const userData = await User.getDataByEmail(email);
+                        return {name: userData}
+                    } else {
+                        throw new Error('Wrong Password :(')
+                    }
+                } else {
+                    throw new Error('Email not found :(');
+                }
+                // const user = await new User('a', email, password);
+                // const result = await user.verifyLogin();
+                // const userData = result.user;
+
+                // if (!result.status) {
+                //     throw new Error(result.cause);
+                // }
             }
         })
     ]

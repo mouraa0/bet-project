@@ -7,7 +7,7 @@ export default function Profile(props) {
     const [myProfile, setMyProfile] = useState(false);
     const router = useRouter();
     const profileId = router.query.userid;
-    let text;
+    const { userData } = props;
 
     useEffect(() => {
         getSession().then(session => {
@@ -21,24 +21,26 @@ export default function Profile(props) {
         })
     }, [])
 
+    if (!userData) {
+        return <p>Loading...</p>
+    }
+
     if (isLoading) {
         return <p>Loading...</p>
     }
 
     if (myProfile) {
-        text = `Welcome, ${props.userData.username}!`
+        return <div>Welcome, {userData.username}</div>
     } else {
-        text = `Welcome to ${props.userData.username} profile!`
+        return <div>Welcome to {userData.username} profile!</div>
     }
-
-    return <div>{text}</div>
 }
 
 export async function getStaticProps(context) {
     const { params } = context;
     const profileId = await params.userid; 
     const res = await fetch(
-            'http://localhost:3000/api/getdata',
+            'http://localhost:3000/api/getuserdata',
             {
                 body: JSON.stringify({
                     id: profileId
@@ -51,7 +53,7 @@ export async function getStaticProps(context) {
     );
 
     const userData = await res.json();
-    
+
     return {
         props: {
             userData,
@@ -62,7 +64,7 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
     return {
         paths: [
-            { params: { userid: '6183c34cb04c673b28756d66'}}
+            { params: { userid: ''}}
         ],
         fallback: true
     };

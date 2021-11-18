@@ -4,24 +4,32 @@ import { comparePassword } from '../lib/auth';
 const mongodb = require('mongodb');
 
 class User {
-    constructor(username = 'a', email = 'a', password = 'a', _id = 0) {
+    constructor(username, email, password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this._id = _id;
         this.coins = 500;
         this.totalBets = 0;
     }
 
-    async getDb() {                     //returns the database.
+    static async getDb() {                                                                      //returns the database.
         const client = await clientPromise;
         const db = await client.db('BetProject');
+        
         return db;
     }
 
-    async getDataByEmail() {
-        const db = await this.getDb();
-        const dbData = await db.collection('users').findOne({ email: this.email });
+    async save() {                                                 //saves the user in the database.
+        const db = await User.getDb();
+
+        return db.collection('users')
+                .insertOne(this)
+                .catch(err => console.log(err));
+    }
+
+    static async getDataByEmail(passedEmail) {
+        const db = await User.getDb();
+        const dbData = await db.collection('users').findOne({ email: passedEmail });
         const userData = {
             _id: dbData._id,
             username: dbData.username,
@@ -33,72 +41,48 @@ class User {
         return userData;
     }
 
-    async getDataById() {
-        const db = await this.getDb();
-        const dbData = await db.collection('users').findOne({ _id: new mongodb.ObjectId(this._id) });
-        const userData = {
-            _id: dbData._id,
-            username: dbData.username,
-            email: dbData.email,
-            coins: dbData.coins,
-            totalBets: dbData.totalBets,
+    static async getDataById(passedId) {
+        const db = await User.getDb();
+        const userData = await db.collection('users').findOne({ _id: new mongodb.ObjectId(passedId) })
+        return {
+            _id: userData._id,
+            username: userData.username,
         }
-
-        return userData;
     }
 
-    async verifyEmail() {               //returns 'true' and the psw if the email already exists, otherwise if it doesnt.
-        const db = await this.getDb();
-        const res = await db.collection('users').findOne({ email: this.email });
+    static async verifyEmail(passedEmail) {                                //returns 'true' and the psw if the email already exists, otherwise if it doesnt.
+        const db = await User.getDb();
+        const DbEmail = await db.collection('users').findOne({ email: passedEmail });
 
-        if (res === null) {
-            return {status: false};
+        if (!DbEmail) {
+            return false;
         } else {
-            return {status: true, psw: res.password};
+            return true;
         }
     }
 
-    async verifyPassword() {            //returns 'true' if the password 
-        const emlV = await this.verifyEmail();
-        const dbPassword = emlV.psw
-        const isValid = await comparePassword(this.password, dbPassword);
-        return isValid;
+    static async verifyPassword(passedEmail, passedPassword) {             //returns 'true' if the password is valid.
+        const db = await User.getDb();
+        const userData = await db.collection('users').findOne({ email: passedEmail });
+        const DbPassword = userData.password;
+        const isPasswordValid = await comparePassword(passedPassword, DbPassword);
+        
+        return isPasswordValid;
     }
 
-    async save() {                      //saves the user in the database.
-        const db = await this.getDb();
+    static async verifyLogin(passedEmail, passedPassword) {               //verifies if the login is possible.
+        const isEmailInDb = await this.verifyEmail(passedEmail);
 
-        return db.collection('users')
-                .insertOne(this)
-                .catch(err => console.log(err));
-    }
+        if (isEmailInDb) {
+            const isPasswordValid = await this.verifyPassword(passedPassword);
+            if (isPasswordValid) {    
 
-    async verifySignUp() {               //verifies if the sign up is possible.
-        const emlV = await this.verifyEmail();
-        const emailIsValid = emlV.status;
-
-        if (!emailIsValid) {
-            this.save();
-            return {status: true}
-        } else {
-            return {status: false, cause: 'eml exists'}
-        }
-    }
-
-    async verifyLogin() {               //verifies if the login is possible.
-        const emlV = await this.verifyEmail();
-        const emailIsValid = emlV.status;
-        const userData = await this.getDataByEmail();
-
-        if (emailIsValid) {
-            const pswVer = await this.verifyPassword();
-            if (pswVer) {    
-                return {status: true, user: userData};
+                return {status: true}
             } else {
-                return {status: false, cause: 'wrong psw'}
+                return {status: false, cause: 'psw'}
             }
         } else {
-            return {status: false, cause: 'eml dont exist'}
+            return {status: false, cause: 'eml'}
         }
     }
 }

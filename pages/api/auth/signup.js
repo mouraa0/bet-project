@@ -7,13 +7,41 @@ export default async (req, res) => {
         const username = req.body.username;
         const email = req.body.email;
         const psw = req.body.password;
+
         const hashedPsw = await hashPassword(psw);
 
         const user = new User(username, email, hashedPsw);
-        user.verifySignUp()
-            .then(result => {
-                return result;
+
+        const isEmailInDb = await User.verifyEmail(email);
+
+        if (!isEmailInDb) {
+            user.save()
+            
+            return res.json({
+                status: true,
+                msg: '',
+            });
+        } else {
+            return res.json({
+                status: false,
+                msg: 'Email already registered :('
             })
-        res.status(202).json('works');
+        }
+
+        // user.verifySignUp()
+        //     .then(result => {
+        //         if (result) {
+        //             return res.json({
+        //                 status: true,
+        //                 msg: ''
+        //             })
+        //         } else {
+        //             return res.json({
+        //                 status: false,
+        //                 msg: 'Email already exists :('
+        //             })
+        //         }
+        //     })
+        //     .catch(err => console.log(err));
     }
-}
+};
