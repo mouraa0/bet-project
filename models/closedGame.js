@@ -3,9 +3,9 @@ const mongodb = require('mongodb');
 
 const ObjectId = mongodb.ObjectId;
 
-class ClGame {
+class ClosedGame {
     constructor(_id, status, date, awayTeam, homeTeam, score) {
-        this._id = new ObjectId(_id);
+        this._id = _id;
         this.status = status;
         this.date = date;
         this.awayTeam = awayTeam;
@@ -21,7 +21,7 @@ class ClGame {
     }
 
     async save() {
-        const db = await ClGame.getDb();
+        const db = await ClosedGame.getDb();
 
         return db.collection('CLgames')
                 .insertOne(this)
@@ -29,8 +29,8 @@ class ClGame {
     }
 
     static async findGameById(passedId) {
-        const db = await ClGame.getDb();
-        const isGameInDb = await db.collection('CLgames').findOne({ _id: new ObjectId(passedId)} );
+        const db = await ClosedGame.getDb();
+        const isGameInDb = await db.collection('CLgames').findOne({ _id: passedId } );
         
         if (isGameInDb) {
             return true;
@@ -38,6 +38,11 @@ class ClGame {
             return false;
         }
     }
+
+    static async deleteGameById(passedId) {
+        const db = await ClosedGame.getDb();
+        return db.collection('CLgames').deleteOne({_id: passedId});
+    }
 }
 
-module.exports = ClGame;
+module.exports = ClosedGame;

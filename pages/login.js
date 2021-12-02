@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {signIn} from 'next-auth/client';
+import Button from "../components/UI/Button";
 
 export default function Login() {
     const [enteredEmail, setEnteredEmail] = useState('');
@@ -40,7 +41,8 @@ export default function Login() {
                     value={enteredPassword}
                     onChange={(event) => {setEnteredPassword(event.target.value)}}
                 />
-                <button type='submit' className='mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' >Login</button>
+                <Button type='submit'>Login</Button>
+                {/* <button type='submit' className='mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' >Login</button> */}
             </form>
         </div>
     );

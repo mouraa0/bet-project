@@ -3,9 +3,9 @@ const mongodb = require('mongodb');
 
 const ObjectId = mongodb.ObjectId;
 
-class FtGame {
+class FinishedGame {
     constructor(_id, status, date, awayTeam, homeTeam, score) {
-        this._id = new ObjectId(_id);
+        this._id = _id;
         this.status = status;
         this.date = date;
         this.awayTeam = awayTeam;
@@ -21,7 +21,7 @@ class FtGame {
     }
 
     async save() {
-        const db = await FtGame.getDb();
+        const db = await FinishedGame.getDb();
 
         return db.collection('FTgames')
                 .insertOne(this)
@@ -29,8 +29,8 @@ class FtGame {
     }
 
     static async findGameById(passedId) {
-        const db = await FtGame.getDb();
-        const isGameInDb = await db.collection('FTgames').findOne({ _id: new ObjectId(passedId)} );
+        const db = await FinishedGame.getDb();
+        const isGameInDb = await db.collection('FTgames').findOne({ _id: passedId} );
         
         if (isGameInDb) {
             return true;
@@ -40,4 +40,4 @@ class FtGame {
     }
 }
 
-module.exports = FtGame;
+module.exports = FinishedGame;

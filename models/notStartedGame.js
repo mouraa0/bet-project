@@ -1,11 +1,10 @@
 import clientPromise from "../lib/mongodb";
 const mongodb = require('mongodb');
 
-const ObjectId = mongodb.ObjectId;
 
-class NsGame {
+class NotStartedGame {
     constructor(_id, status, date, awayTeam, homeTeam, odds) {
-        this._id = new ObjectId(_id);
+        this._id = _id;
         this.status = status;
         this.date = date;
         this.awayTeam = awayTeam;
@@ -21,7 +20,7 @@ class NsGame {
     }
 
     async save() {
-        const db = await NsGame.getDb();
+        const db = await NotStartedGame.getDb();
 
         return db.collection('games')
                 .insertOne(this)
@@ -29,8 +28,8 @@ class NsGame {
     }
 
     static async findGameById(passedId) {
-        const db = await NsGame.getDb();
-        const isGameInDb = await db.collection('games').findOne({ _id: new ObjectId(passedId)} );
+        const db = await NotStartedGame.getDb();
+        const isGameInDb = await db.collection('games').findOne({ _id: passedId } );
         
         if (isGameInDb) {
             return true;
@@ -38,6 +37,11 @@ class NsGame {
             return false;
         }
     }
+    
+    static async deleteGameById(passedId) {
+        const db = await NotStartedGame.getDb();
+        return db.collection('games').deleteOne({_id: passedId});
+    }
 }
 
-module.exports = NsGame;
+module.exports = NotStartedGame;

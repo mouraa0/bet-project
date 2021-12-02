@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Button from '../components/UI/Button';
 
 export default function SignUp() {
     const [enteredEmail, setEnteredEmail] = useState('');
@@ -54,7 +55,7 @@ export default function SignUp() {
                     value={enteredPassword}
                     onChange={(event) => {setEnteredPassword(event.target.value)}}
                 />
-                <button type='submit' className='mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' >Sign Up</button>
+                <Button type='submit'>Sign Up</Button>
             </form>
         </div>
     );

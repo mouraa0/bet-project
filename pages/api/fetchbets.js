@@ -14,12 +14,12 @@ export default async (req, res) => {
         }
       };
 
-    cron.schedule(cronTime.every(30).minutes(), () => {
+    // cron.schedule(cronTime.every(30).minutes(), () => {
       axios(options).then(function (response) {
         gameDataTreatment(response.data.response);
-        console.log(res.send(response.data));
+        console.log('working!');
       }).catch(function (error) {
         console.error(error);
       });
-    });
+    // });
 };
