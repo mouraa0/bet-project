@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 380px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.container__date {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+
+.container__hour {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+
+.container__vs {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
